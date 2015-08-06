@@ -1,0 +1,25 @@
+{
+  "name": "message_system_like_airbnb",
+  "version": "1.0.0",
+  "description": "A ReactJS + NodeJS based application which lets you handle a messaging system like Airbnb",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shubs/message_system_like_airbnb.git"
+  },
+  "author": "Shubham SHARMA <shubham@sharma.fr> (http://www.sharma.fr/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shubs/message_system_like_airbnb/issues"
+  },
+  "homepage": "https://github.com/shubs/message_system_like_airbnb",
+  "dependencies": {
+    "firebase": "^2.2.9",
+    "good": "^6.3.0",
+    "good-console": "^5.0.2",
+    "hapi": "^8.8.1"
+  }
+}
