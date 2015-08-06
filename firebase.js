@@ -3,9 +3,10 @@
 (function() {
 	var Firebase = require("firebase");
 	var db = new Firebase("https://reactmessage.firebaseio.com/message");
+	var async = require("async");
 
 	module.exports = {
-		addMessage: function (content, from, to) {
+		addMessage: function (content, from, to, callback) {
 			id = Math.floor((Math.random() * 999999999) + 1);
 			message = {
 				id: id,
@@ -16,43 +17,44 @@
 
 			db.child(id).set(message, function(error) {
 				if (error) {
-					return({error : "Data could not be saved." + error});
-					exit(1);
+					callback({error : "Data could not be saved." + error});
+				} else{
+					callback(message);
 				}
 			});
 
 			return message;
 		},
-		delMessage: function (id) {
+		delMessage: function (id, callback) {
 			db.child(id).set(null, function(error) {
 				if (error) {
-					return({error : "Data could not be deleted." + error});
-					exit(1);
+					callback({error : "Data could not be deleted." + error});
+				} else{
+					callback({});
 				}
 			});
 			return {};
 		},
-		listMessages: function () {
+		// callback ca marche comme ca en fait :O
+		listMessages: function (callback) {
 			list = {};
+
 			db.on("value", function(snapshot) {
 				list = snapshot.val();
+				callback(list)
 			}, function (errorObject) {
-				return({error : "The read failed: " + errorObject.code});
-				exit(1);
+				callback({error : "The read failed: " + errorObject.code})
 			});
-			return list;
 		},
-		viewMessage: function (id) {
+		viewMessage: function (id, callback) {
 			message = {};
+
 			db.child(id).on("value", function(snapshot) {
 				message = snapshot.val();
-				console.log(id);
-				console.log(message);
+				callback(message);
 			}, function (errorObject) {
-				return({error : "The read failed: " + errorObject.code});
-				exit(1);
+				callback({error : "The read failed: " + errorObject.code});
 			});
-			return message;
 		}
 	};
 

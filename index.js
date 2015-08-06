@@ -20,8 +20,9 @@ server.route({
     method: 'GET',
     path: '/message/',
     handler: function (request, reply) {
-    	ret = fb.listMessages();
-        reply(ret);
+    	fb.listMessages(function (list) {
+        	reply(list);
+    	});
     }
 });
 
@@ -30,8 +31,9 @@ server.route({
     path: '/message/{id}',
     handler: function (request, reply) {
     	id = request.params.id;
-    	ret = fb.viewMessage(id);
-        reply(ret);
+    	fb.viewMessage(id, function(message){
+        	reply(message);
+    	});
     }
 });
 
@@ -40,8 +42,9 @@ server.route({
     path: '/message/{id}',
     handler: function (request, reply) {
     	id = request.params.id;
-    	ret = fb.delMessage(id);
-        reply(ret);
+    	fb.delMessage(id, function(confirmation){
+        	reply(confirmation);
+    	});
     }
 });
 
@@ -52,12 +55,14 @@ server.route({
     	body = request.payload;
     	// Mendatory fields in message :
     	// content, from, to
-    	ret = fb.addMessage(
+    	fb.addMessage(
     		body.content,
     		body.from,
-    		body.to
-    		);
-        reply(ret);
+    		body.to,
+    		function(message){
+    			reply(message);
+    		}
+    	);
     }
 });
 
