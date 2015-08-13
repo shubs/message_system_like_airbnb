@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/shubs/message_system_like_airbnb",
   "dependencies": {
+    "crypto": "0.0.3",
     "firebase": "^2.2.9",
     "good": "^6.3.0",
     "good-console": "^5.0.2",
