@@ -96,7 +96,7 @@ server.route({
         fb.receiveMessage(
             body.Headers.From,
             body.Headers.To,
-            body.Headers.Subject,
+            body.Subject,
             body.Headers.Date,
             body["Text-part"],
             function(message){

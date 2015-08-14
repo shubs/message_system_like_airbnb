@@ -6,6 +6,7 @@ var db_message = new Firebase("https://reactmessage.firebaseio.com/message");
 var db_user = new Firebase("https://reactmessage.firebaseio.com/user");
 var async = require("async");
 var lib = require("./lib.js");
+var mailjet = require("./mailjet.js");
 var moment = require('moment');
 
 ////////////////////
@@ -14,6 +15,7 @@ var moment = require('moment');
 myFunctions = {
 	addMessage: function (subject, content, date, fromId, toId, callback) {
 		id = Math.floor((Math.random() * 999999999) + 1);
+
 		message = {
 			id: id,
 			subject: subject,
@@ -94,8 +96,6 @@ myFunctions = {
 	},
 	// callback ca marche comme ca en fait :O
 	listUsers: function (callback) {
-		list = {};
-
 		db_user.once("value", function(snapshot) {
 			list = snapshot.val();
 			callback(list)
@@ -104,14 +104,29 @@ myFunctions = {
 		});
 	},
 	viewUser: function (id, callback) {
-		user = {};
-
 		db_user.child(id).once("value", function(snapshot) {
-			user = snapshot.val();
+			var user = snapshot.val();
 			callback(user);
 		}, function (errorObject) {
 			callback({error : "The read failed: " + errorObject.code});
 		});
+	},
+	findUser: function (proxyEmail, callback) {
+		db_user.orderByChild("proxyEmail").equalTo(proxyEmail).once("value", function(snapshot) {
+			
+			// only one here
+			if (snapshot.numChildren() == 1){
+				snapshot.forEach(function(childSnapshot) {
+					var user = childSnapshot.val();
+					callback(user);
+				});
+			} else {
+				callback({error : "more than one result for " + proxyEmail});
+			}
+		}, function (errorObject) {
+			callback({error : "The read failed: " + errorObject.code});
+		});
+
 	},
 
 
@@ -139,7 +154,7 @@ myFunctions = {
 			// here compiling the 2 to send them to addMessage
 		    var to = results[0];
 		    var from = results[1];
-		    var date = moment().format('MMMM Do YYYY, h:mm:ss a');
+		    var date = moment().format('llll');
 
 		    myFunctions.sendAPI(from, to, subject, content);
 			myFunctions.addMessage(subject, content, date, fromId, toId, callback);
@@ -147,13 +162,32 @@ myFunctions = {
 
 	},
 	receiveMessage: function (fromEmail, toEmail, subject, date, content, callback) {
-		var fromId = "FIXME";
-		var toId = "FIXME";
-		// do the relation with Emails and Ids
+		async.parallel([
+			// getting the first async info
+		    function(cb){
+		    	myFunctions.findUser(fromEmail, function(user){
+		    		cb(null, user.id);
+		        });
+		    },
+		    // and the second one
+		    function(cb){
+		    	myFunctions.findUser(toEmail, function(user){
+		    		cb(null, user.id);
+		        });
+		    }
+		],
+		function(err, results){
+			// here compiling the 2 to send them to addMessage
+			var fromId = results[0];
+			var toId = results[1];
 
-		myFunctions.addMessage(subject, content, date, fromId, toId, callback);
+		    var momentDate = moment(date, 'llll').toString();
+			// do the relation with Emails and Ids
+			myFunctions.addMessage(subject, content, momentDate, fromId, toId, callback);
+		});
+
 	},
-	
+
 	////////////////////
 	// Mailjet functions //
 	////////////////////

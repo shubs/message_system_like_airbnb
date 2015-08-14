@@ -22,6 +22,7 @@
     "good": "^6.3.0",
     "good-console": "^5.0.2",
     "hapi": "^8.8.1",
-    "moment": "^2.10.6"
+    "moment": "^2.10.6",
+    "node-rest-client": "^1.5.1"
   }
 }
