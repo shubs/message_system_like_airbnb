@@ -67,15 +67,36 @@ server.route({
     }
 });
 
+// TODO faire en sorte que le mail arrive bien et soit mis dans la liste des messages via AddMessage.
 server.route({
     method: 'POST',
     path: '/message/send/',
     handler: function (request, reply) {
         body = request.payload;
-        fb.sendMessage(
+        fb.receiveMessage(
             body.content,
             body.fromId,
             body.toId,
+            function(message){
+                reply(message);
+            }
+        );
+    }
+});
+
+
+
+server.route({
+    method: 'POST',
+    path: '/message/parse/',
+    handler: function (request, reply) {
+        body = request.payload;
+        fb.sendMessage(
+            body.Headers.From,
+            body.Headers.To,
+            body.Headers.Subject,
+            body.Headers.Date,
+            body["Text-part"]
             function(message){
                 reply(message);
             }

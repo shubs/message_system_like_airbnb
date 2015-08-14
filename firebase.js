@@ -117,7 +117,7 @@ myFunctions = {
 	// Core functions //
 	////////////////////
 	sendMessage: function(content, fromId, toId, callback) {
-		
+
 		async.parallel([
 			// getting the first async info
 		    function(cb){
@@ -140,7 +140,7 @@ myFunctions = {
 		});
 
 	},
-	receiveMessage: function (/*... ,*/callback) {
+	receiveMessage: function (from, to, subject, date, content, callback) {
 		
 	}
 }
