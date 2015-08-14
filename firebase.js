@@ -6,18 +6,21 @@ var db_message = new Firebase("https://reactmessage.firebaseio.com/message");
 var db_user = new Firebase("https://reactmessage.firebaseio.com/user");
 var async = require("async");
 var lib = require("./lib.js");
+var moment = require('moment');
 
 ////////////////////
 // message functions //
 ////////////////////
 myFunctions = {
-	addMessage: function (content, from, to, callback) {
+	addMessage: function (subject, content, date, fromId, toId, callback) {
 		id = Math.floor((Math.random() * 999999999) + 1);
 		message = {
 			id: id,
+			subject: subject,
 			content: content,
-			from: from,
-			to:to		
+			date: date,
+			fromId: fromId,
+			toId:toId
 		};
 
 		db_message.child(id).set(message, function(error) {
@@ -116,7 +119,7 @@ myFunctions = {
 	////////////////////
 	// Core functions //
 	////////////////////
-	sendMessage: function(content, fromId, toId, callback) {
+	sendMessage: function(subject, content, fromId, toId, callback) {
 
 		async.parallel([
 			// getting the first async info
@@ -136,12 +139,26 @@ myFunctions = {
 			// here compiling the 2 to send them to addMessage
 		    var to = results[0];
 		    var from = results[1];
-			module.exports.addMessage(content, from, to, callback);
+		    var date = moment().format('MMMM Do YYYY, h:mm:ss a');
+
+		    myFunctions.sendAPI(from, to, subject, content);
+			myFunctions.addMessage(subject, content, date, fromId, toId, callback);
 		});
 
 	},
-	receiveMessage: function (from, to, subject, date, content, callback) {
-		
+	receiveMessage: function (fromEmail, toEmail, subject, date, content, callback) {
+		var fromId = "FIXME";
+		var toId = "FIXME";
+		// do the relation with Emails and Ids
+
+		myFunctions.addMessage(subject, content, date, fromId, toId, callback);
+	},
+	
+	////////////////////
+	// Mailjet functions //
+	////////////////////
+	sendAPI : function(from, to, subject, text){
+		console.log("[DEBUG] Send API " + from + to + subject + text);
 	}
 }
 

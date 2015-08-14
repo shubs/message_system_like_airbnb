@@ -54,12 +54,13 @@ server.route({
     path: '/message/',
     handler: function (request, reply) {
         body = request.payload;
-        // Mendatory fields in message :
-        // content, from, to
+        // Mendatory fields in message
         fb.addMessage(
+            body.subject,
             body.content,
-            body.from,
-            body.to,
+            body.date,
+            body.fromId,
+            body.toId,
             function(message){
                 reply(message);
             }
@@ -73,7 +74,8 @@ server.route({
     path: '/message/send/',
     handler: function (request, reply) {
         body = request.payload;
-        fb.receiveMessage(
+        fb.sendMessage(
+            body.subject,
             body.content,
             body.fromId,
             body.toId,
@@ -91,12 +93,12 @@ server.route({
     path: '/message/parse/',
     handler: function (request, reply) {
         body = request.payload;
-        fb.sendMessage(
+        fb.receiveMessage(
             body.Headers.From,
             body.Headers.To,
             body.Headers.Subject,
             body.Headers.Date,
-            body["Text-part"]
+            body["Text-part"],
             function(message){
                 reply(message);
             }
