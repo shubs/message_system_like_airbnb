@@ -156,7 +156,7 @@ myFunctions = {
 		    var from = results[1];
 		    var date = moment().format('llll');
 
-		    myFunctions.sendAPI(from, to, subject, content);
+		    mailjet.sendEmail(from, to, subject, content);
 			myFunctions.addMessage(subject, content, date, fromId, toId, callback);
 		});
 
@@ -187,13 +187,6 @@ myFunctions = {
 		});
 
 	},
-
-	////////////////////
-	// Mailjet functions //
-	////////////////////
-	sendAPI : function(from, to, subject, text){
-		console.log("[DEBUG] Send API " + from + to + subject + text);
-	}
 }
 
 module.exports = myFunctions;

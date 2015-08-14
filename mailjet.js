@@ -22,15 +22,13 @@ myFunctions = {
 			headers:{"Content-Type": "application/json"} 
 		};
 		client.post("https://api.mailjet.com/v3/send", args, function(data, response){
-		    // parsed response body as js object 
-		    console.log(data);
-		    // raw response 
-		    console.log(response);
+		    // // parsed response body as js object 
+		    // console.log(data);
+		    // // raw response 
+		    // console.log(response);
 		});
 	}
 	
 }
 
 module.exports = myFunctions;
-
-myFunctions.sendEmail("shubham@sharma.fr", "shubham@mailjet.com", "Your email flight plan!" , "Dear passenger, welcome to Mailjet! May the delivery force be with you!");
