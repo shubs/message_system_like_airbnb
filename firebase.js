@@ -3,6 +3,7 @@
 
 var Firebase = require("firebase");
 var db_message = new Firebase("https://reactmessage.firebaseio.com/message");
+var db_conversation = new Firebase("https://reactmessage.firebaseio.com/conversation");
 var db_user = new Firebase("https://reactmessage.firebaseio.com/user");
 var async = require("async");
 var lib = require("./lib.js");
@@ -15,7 +16,12 @@ var moment = require('moment');
 myFunctions = {
 	addMessage: function (subject, content, date, fromId, toId, callback) {
 		id = Math.floor((Math.random() * 999999999) + 1);
-
+		var conversationId = 0;
+		if (fromId < toId)
+			conversationId = fromId + "->" + toId;
+		else
+			conversationId = toId + "->" + fromId;
+		
 		message = {
 			id: id,
 			subject: subject,
@@ -25,7 +31,17 @@ myFunctions = {
 			toId:toId
 		};
 
-		db_message.child(id).set(message, function(error) {
+		// db_message.child(id).set(message, function(error) {
+		// 	if (error) {
+		// 		callback({error : "[script error] Data could not be saved." + error});
+		// 	} else{
+		// 		callback(message);
+		// 	}
+		// });
+		
+
+		// just for the conversation demo
+		db_conversation.child(conversationId).child('message').child(id).set(message, function(error) {
 			if (error) {
 				callback({error : "[script error] Data could not be saved." + error});
 			} else{

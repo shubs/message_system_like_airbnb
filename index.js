@@ -4,7 +4,7 @@ var Good = require('good');
 var fb = require("./firebase");
 
 var server = new Hapi.Server();
-server.connection({ port: 3000 });
+server.connection({ port: 4000 });
 
 server.route({
     method: 'GET',
@@ -56,6 +56,7 @@ server.route({
         body = request.payload;
         // Mendatory fields in message
         fb.addMessage(
+            body.conversationId,
             body.subject,
             body.content,
             body.date,
@@ -94,6 +95,7 @@ server.route({
     handler: function (request, reply) {
         body = request.payload;
         fb.receiveMessage(
+            body.Headers.conversationId,
             body.Headers.From,
             body.Headers.To,
             body.Subject,
