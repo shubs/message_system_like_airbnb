@@ -14,6 +14,41 @@ server.route({
     }
 });
 
+server.route({
+    method: 'GET',
+    path: '/conversation/',
+    handler: function (request, reply) {
+        fb.listConversation(function (list) {
+            reply(list);
+        });
+    }
+});
+
+server.route({
+    method: 'GET',
+    path: '/conversation/{conversationId}/{id}',
+    handler: function (request, reply) {
+        id = request.params.id;
+        conversationId = request.params.conversationId;
+        fb.viewMessage(conversationId, id, function(message){
+            reply(message);
+        });
+    }
+});
+
+server.route({
+    method: 'GET',
+    path: '/conversation/{conversationId}/',
+    handler: function (request, reply) {
+        conversationId = request.params.conversationId;
+        fb.listMessages(conversationId, function (list) {
+            reply(list);
+        });
+    }
+});
+
+
+
 // Messages
 
 server.route({

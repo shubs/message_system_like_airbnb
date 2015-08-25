@@ -59,24 +59,36 @@ myFunctions = {
 		});
 	},
 	// callback ca marche comme ca en fait :O
-	listMessages: function (callback) {
+	listMessages: function (conversationId, callback) {
 		list = {};
 
-		db_message.once("value", function(snapshot) {
+		db_conversation.child(conversationId).child('message').once("value", function(snapshot) {
 			list = snapshot.val();
 			callback(list)
 		}, function (errorObject) {
 			callback({error : "The read failed: " + errorObject.code})
 		});
 	},
-	viewMessage: function (id, callback) {
+	viewMessage: function (conversationId, id, callback) {
 		message = {};
 
-		db_message.child(id).once("value", function(snapshot) {
+		db_conversation.child(conversationId).child('message').child(id).once("value", function(snapshot) {
 			message = snapshot.val();
 			callback(message);
 		}, function (errorObject) {
 			callback({error : "The read failed: " + errorObject.code});
+		});
+	},
+
+	//listConversation	// callback ca marche comme ca en fait :O
+	listConversation: function (callback) {
+		list = {};
+
+		db_conversation.once("value", function(snapshot) {
+			list = snapshot.val();
+			callback(list)
+		}, function (errorObject) {
+			callback({error : "The read failed: " + errorObject.code})
 		});
 	},
 
